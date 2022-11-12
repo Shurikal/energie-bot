@@ -190,12 +190,59 @@ import { ArrowLongRightIcon } from "@heroicons/vue/24/outline";
 
     <section class="py-16">
       <div class="container mx-auto">
-        <h2 class="text-xl w-2/3 mb-8">
+        <h2 class="mb-8 w-2/3 text-xl">
           Diese Fragen könnten klarheit schaffen, was du von uns erwarten
           kannst.
         </h2>
 
-        <Faq/>
+        <Faq />
+      </div>
+    </section>
+
+    <section class="py-16 bg-gray-200">
+      <div class="container mx-auto">
+        <div class="grid grid-cols-2 gap-8">
+          <div class="flex flex-col justify-between">
+            <div>
+              <h2 class="mb-8 text-lg">
+                Unsere Beratung ist kostenlos und neutral. Ganz für dich, 
+                deine Bedürfnisse und Möglichkeiten.
+              </h2>
+            </div>
+            <p class="mb-4">
+              <NuxtLink
+                class="inline-flex rounded-full border-2 border-black bg-white py-1 px-4 text-sm font-bold text-black transition-all duration-300 hover:bg-black hover:text-white"
+                to="/"
+                >Beratungsgespräch mit SGSW
+                <ArrowLongRightIcon class="ml-6 h-6 w-6"
+              /></NuxtLink>
+            </p>
+          </div>
+          <div class="flex flex-col justify-between">
+            <div>
+              <h2 class="mb-8 text-lg">
+                Nutze unseren Chat Bot und erhalte schnell, einfach und unkompliziert die wichtigsten Möglichkeiten.
+              </h2>
+            </div>
+            <p class="mb-4">
+              <NuxtLink
+                class="inline-flex rounded-full border-2 border-black bg-white py-1 px-4 text-sm font-bold text-black transition-all duration-300 hover:bg-black hover:text-white"
+                to="/"
+                >Erste Vorschläge erhalten
+                <ArrowLongRightIcon class="ml-6 h-6 w-6"
+              /></NuxtLink>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16">
+      <div class="container mx-auto">
+        <h2 class="text-lg flex justify-center mb-8">
+          <img src="~/assets/img/logo.png" class="max-h-12" alt="St.Galler Stadtwerke">
+        </h2>
+        <p class="w-2/3 mx-auto">Wie sieht unsere Energiezukunft aus? Wir haben die Antwort. Wer sich mit der Zukunft beschäftigt, möchte Klarheit. Gemeinsam mit Dir finden wir deine bestmögliche Lösung.</p>
       </div>
     </section>
   </div>

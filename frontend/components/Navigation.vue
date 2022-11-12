@@ -15,21 +15,28 @@
             <NuxtLink
               class="relative rounded-md py-1 text-gray-500 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:origin-center after:scale-x-0 after:transform after:bg-red-500 after:transition-all after:duration-300 after:content-[''] hover:text-gray-900 hover:after:scale-x-100"
               to="/"
-              >Home</NuxtLink
+              >Beratung</NuxtLink
             >
           </li>
           <li>
             <NuxtLink
               class="relative rounded-md py-1 text-gray-500 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:origin-center after:scale-x-0 after:transform after:bg-red-500 after:transition-all after:duration-300 after:content-[''] hover:text-gray-900 hover:after:scale-x-100"
               to="/about"
-              >About</NuxtLink
+              >Heizung</NuxtLink
             >
           </li>
           <li>
             <NuxtLink
               class="relative rounded-md py-1 text-gray-500 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:origin-center after:scale-x-0 after:transform after:bg-red-500 after:transition-all after:duration-300 after:content-[''] hover:text-gray-900 hover:after:scale-x-100"
               to="/contact"
-              >Contact</NuxtLink
+              >Energie</NuxtLink
+            >
+          </li>
+          <li>
+            <NuxtLink
+              class="relative rounded-md py-1 text-gray-500 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:origin-center after:scale-x-0 after:transform after:bg-red-500 after:transition-all after:duration-300 after:content-[''] hover:text-gray-900 hover:after:scale-x-100"
+              to="/contact"
+              >Mieter</NuxtLink
             >
           </li>
         </ul>
