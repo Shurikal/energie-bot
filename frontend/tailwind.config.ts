@@ -35,6 +35,9 @@ export default <Partial<Config>>{
         '2xl': ['2.441rem', '2.941rem'],
         '3xl': ['3.052rem', '3.552rem'],
         '4xl': ['3.815rem', '4.315rem'],
+      },
+      aspectRatio: {
+        '3/2': '3 / 2'
       }
     },
   },

@@ -1,4 +1,5 @@
-<script setup></script>
+<script setup>
+</script>
 
 <template>
   <nav class="h-16">
@@ -36,7 +37,7 @@
       <div>
         <ul>
           <li>
-            <NuxtLink class=" transition-all duration-300  bg-white rounded-full py-1 px-4 text-black border-2 border-black hover:bg-black hover:text-white" to="/login">Login</NuxtLink>
+            <NuxtLink class="transition-all duration-300  bg-white rounded-full py-1 px-4 text-black border-2 border-black hover:bg-black hover:text-white text-sm font-bold" to="/login">Login</NuxtLink>
           </li>
         </ul>
       </div>
