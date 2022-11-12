@@ -116,7 +116,7 @@ import { ArrowLongRightIcon } from "@heroicons/vue/24/outline";
           <div class="overflow-hidden rounded-md border-2 border-black">
             <img
               src="~/assets/img/waermepumpe.jpg"
-              class="aspect-3/2 object-cover"
+              class="aspect-3/2 object-cover w-full"
               alt=""
             />
 
@@ -152,7 +152,7 @@ import { ArrowLongRightIcon } from "@heroicons/vue/24/outline";
           <div class="overflow-hidden rounded-md border-2 border-black">
             <img
               src="~/assets/img/waermepumpe.jpg"
-              class="aspect-3/2 object-cover"
+              class="aspect-3/2 object-cover w-full"
               alt=""
             />
 
