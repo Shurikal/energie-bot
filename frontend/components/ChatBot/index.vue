@@ -264,7 +264,7 @@ const runSuggestionRequests = async () => {
     } else if (heatingTypesPlaned.includes(heatingType)) {
       await new Promise((resolve) => setTimeout(resolve, 300));
       addChat(
-        `Der Anschluss deines Objektes an das Fernwärmenetz ist geplan.`,
+        `Der Anschluss deines Objektes an das Fernwärmenetz ist geplant.`,
         "bot"
       );
     } else if (heatingTypesDone.includes(heatingType)) {
