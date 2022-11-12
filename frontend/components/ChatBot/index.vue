@@ -82,7 +82,7 @@ const questions = ref([
 // initial chat message with question from "bot"
 const initChat = () => {
   addChat(
-    "Hallo, kann ich dir helfen schnell und einfach Empfehlungen zu geben?",
+    "Hallo, ich bin dein persönlicher Energieberater. Ich helfe dir gerne bei der Suche nach einer passenden Heizung.",
     "bot"
   );
   addChat(questions.value[questionIndex.value].text, "bot");
