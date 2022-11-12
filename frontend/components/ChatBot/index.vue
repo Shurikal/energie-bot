@@ -1,7 +1,6 @@
 <script setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { ChatBubbleOvalLeftIcon } from "@heroicons/vue/24/solid";
-import { ChatBotQuestion } from '~~/.nuxt/components';
 
 const answers = ref({})
 
