@@ -32,7 +32,7 @@ import { ArrowLongRightIcon } from "@heroicons/vue/24/outline";
           </p>
         </div>
         <div>
-          <img src="~/assets/img/hero.png" alt="hero" class="w-full" />
+          <img src="~/assets/img/header.jpg" alt="Post-Its im Bezug zu Heizung und den möglichen Lösungen" class="w-full rounded-md" />
         </div>
       </div>
     </header>
