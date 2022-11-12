@@ -52,6 +52,24 @@ const questions = ref([
     ],
   },
   {
+    text: "Was für eine Heizung ist installiert?",
+    type: "choice",
+    options: [
+      {
+        text: "Öl",
+        value: "oil",
+      },
+      {
+        text: "Gas",
+        value: "gas",
+      },
+      {
+        text: "Andere",
+        value: "other",
+      },
+    ],
+  },
+  {
     text: "Um welches Objekt handelt es sich?",
     type: "address",
   },
@@ -151,7 +169,10 @@ const runSuggestionRequests = async () => {
 
   if (!coords) {
     await new Promise((resolve) => setTimeout(resolve, 300));
-    addChat("Ich konnte die Adresse nicht finden. Bitte versuche es erneut.", "bot");
+    addChat(
+      "Ich konnte die Adresse nicht finden. Bitte versuche es erneut.",
+      "bot"
+    );
     loading.value = false;
     return;
   }
@@ -167,13 +188,119 @@ const runSuggestionRequests = async () => {
   console.log("solarInfo", solarInfo);
 
   const highestSolarClass = getHighestSolarClass(solarInfo);
-  console.log('highestSolarClass', highestSolarClass);
+  console.log("highestSolarClass", highestSolarClass);
 
   loading.value = false;
 
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 300));
   loading.value = false;
-  addChat("Hier sind deine Vorschläge:", "bot");
+
+  addChat("Folgende Informationen konnte ich zu deinem Objekt finden:", "bot");
+
+  // SOLAR
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  if (highestSolarClass.highestClass >= 3) {
+    addChat(
+      `Ich habe eine gute Nachricht für dich. Dein Dach ist für eine Solaranlage geeignet. Das Dach hat die Note "${highestSolarClass.classText}".`,
+      "bot"
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    addChat(
+      `Hier hast du noch eine Darstellung davon: https://www.uvek-gis.admin.ch/BFE/sonnendach/?featureId=${highestSolarClass.featureId}&lang=de`,
+      "bot"
+    );
+  } else {
+    addChat(
+      "Leider ist die Dachfläche nicht für eine Solaranlage geeignet.",
+      "bot"
+    );
+  }
+  // SOLAR END
+
+  // HEATING TYPE (Fernwärme)
+  if (heatingInfo.nhits > 0) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    addChat(
+      "Ich habe auch Informationen über die Wärmeversorgung deines Objekts gefunden.",
+      "bot"
+    );
+
+    // maybe there are more than one heating systems but we only go for the first one #proofOfConcept
+    const heatingType = heatingInfo.records[0].fields.waermevers;
+
+    // each of the following heating types are not possible
+    // Wärmeverbunde, Wärmepumpen Erdsonde, "dezentral erneuerbar, ausserhalb bauzone"
+    const heatingTypesNotPossible = [
+      "Wärmeverbunde",
+      "Wärmepumpen Erdsonde",
+      "dezentral erneuerbar, ausserhalb bauzone",
+    ];
+
+    // following heating types are possible, but not done yet
+    // Fernwärme Erweiterung, Fernwärme Endausbaupotenzial,  Fernwärme Ausbau 2020 bis 2025
+    const heatingTypesPlaned = [
+      "Fernwärme Erweiterung",
+      "Fernwärme Endausbaupotenzial",
+      "Fernwärme Ausbau 2020 bis 2025",
+      "Anergie Ausbaugebiet (2019 bis 2023)",
+      "Anergie Ausbaugebiet (2024 bis 2033)",
+      "Anergie Ergänzungsgebiet",
+      "Fernwärme Ergänzungsgebiet"
+    ];
+
+    // following heating types are already done, to connect to the heating network
+    // Fernwärme in Betrieb
+    const heatingTypesDone = ["Fernwärme in Betrieb"];
+
+    console.log("heatingType", heatingType);
+
+    if (heatingTypesNotPossible.includes(heatingType)) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      addChat(
+        `Leider wird dein Objekt nicht an das Fernwärmenetz angeschlossen.`,
+        "bot"
+      );
+    } else if (heatingTypesPlaned.includes(heatingType)) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      addChat(
+        `Der Anschluss deines Objektes an das Fernwärmenetz ist geplan.`,
+        "bot"
+      );
+    } else if (heatingTypesDone.includes(heatingType)) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      addChat(
+        `Dein Objekt kann an das Fernwärmenetz angeschlossen werden.`,
+        "bot"
+      );
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      addChat(
+        `Leider habe ich keine brauchbaren Informationen gefunden.`,
+        "bot"
+      );
+    }
+  } else {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    addChat(
+      "Leider habe ich keine brauchbaren Informationen gefunden.",
+      "bot"
+    );
+  }
+  // HEATING TYPE (Fernwärme) END
+
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  addChat(
+    "Ich hoffe ich konnte dir weiterhelfen. Wenn du noch Fragen hast, kannst du sie mir gerne stellen.",
+    "bot"
+  );
+
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  addChat(
+    "Die St.Galler Stadtwerke bieten auch eine Beratung an. Du kannst dich gerne an die Stadtwerke wenden.",
+    "bot"
+  );
+
 };
 </script>
 
@@ -205,7 +332,7 @@ const runSuggestionRequests = async () => {
               Erhalte die ersten Empfehlungen
             </div>
 
-            <div class="h-96 overflow-scroll bg-white p-4">
+            <div id="chat" class="h-96 overflow-scroll bg-white p-4">
               <div class="flex w-full flex-col">
                 <div v-for="(message, index) in chat" :key="`message-${index}`">
                   <ChatBotAnswer v-if="message.type === 'user'">{{
@@ -228,7 +355,7 @@ const runSuggestionRequests = async () => {
                   {{ option.text }}
                 </button>
 
-                <div
+                <form @submit.prevent="runSuggestionRequests()"
                   class="flex w-full"
                   v-if="questions[questionIndex].type === 'address'"
                 >
@@ -243,12 +370,12 @@ const runSuggestionRequests = async () => {
                   <div>
                     <button
                       class="flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white"
-                      @click="runSuggestionRequests()"
+                      type="submit"
                     >
                       <PaperAirplaneIcon class="h-4 w-4" />
                     </button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
           </div>
@@ -256,13 +383,13 @@ const runSuggestionRequests = async () => {
       </transition>
     </Popover>
 
-    <div
+    <!-- <div
       class="fixed h-96 w-96 -translate-x-full -translate-y-96 transform bg-red-900 text-white"
     >
       <div class="p-2">
         {{ answers }}
       </div>
-    </div>
+    </div> -->
     <!-- 
     <button
       class="flex h-16 w-16 items-center justify-center rounded-full bg-red-500"
