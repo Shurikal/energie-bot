@@ -191,7 +191,7 @@ import { ArrowLongRightIcon } from "@heroicons/vue/24/outline";
     <section class="py-16">
       <div class="container mx-auto">
         <h2 class="mb-8 w-2/3 text-xl">
-          Diese Fragen könnten klarheit schaffen, was du von uns erwarten
+          Diese Fragen könnten Klarheit schaffen, was du von uns erwarten
           kannst.
         </h2>
 

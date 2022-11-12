@@ -276,14 +276,14 @@ const runSuggestionRequests = async () => {
     } else {
       await new Promise((resolve) => setTimeout(resolve, 300));
       addChat(
-        `Leider habe ich keine brauchbaren Informationen gefunden.`,
+        `Leider habe ich keine brauchbaren Informationen zum Anschluss an das Fernwärmenetz gefunden.`,
         "bot"
       );
     }
   } else {
     await new Promise((resolve) => setTimeout(resolve, 300));
     addChat(
-      "Leider habe ich keine brauchbaren Informationen gefunden.",
+      "Leider habe ich keine brauchbaren Informationen zum Anschluss an das Fernwärmenetz gefunden.",
       "bot"
     );
   }
