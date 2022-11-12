@@ -55,7 +55,22 @@ const questions = ref([
     text: "Um welches Objekt handelt es sich?",
     type: "address",
   },
+  {
+    text: "End",
+    type: "end",
+  },
 ]);
+
+// initial chat message with question from "bot"
+const initChat = () => {
+  addChat(
+    "Hallo, kann ich dir helfen schnell und einfach Empfehlungen zu geben?",
+    "bot"
+  );
+  addChat(questions.value[questionIndex.value].text, "bot");
+};
+
+initChat();
 
 // we need to save the answers so we can make suggestions
 const answers = ref([]);
@@ -68,9 +83,11 @@ const addAnswer = async (answer) => {
 
   await new Promise((resolve) => setTimeout(resolve, 300));
 
-  if (questionIndex.value < questions.value.length) {
-    addChat(questions.value[questionIndex.value].text, "bot");
+  if (questions.value[questionIndex.value].type === "end") {
+    return;
   }
+
+  addChat(questions.value[questionIndex.value].text, "bot");
 };
 
 // get the address that has been input by the user
@@ -81,69 +98,83 @@ const getLv95Coords = async (address) => {
     `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${address}&type=locations&origins=address&limit=1&sr=2056`
   );
   const data = await response.json();
-  return data.results[0].attrs;
+
+  try {
+    return data.results[0].attrs;
+  } catch (error) {
+    return null;
+  }
 };
 
-const getHeatingInfo = async (lat,lon) => {
+const getHeatingInfo = async (lat, lon) => {
   const dist = 1;
 
-  const url = `https://daten.stadt.sg.ch/api/records/1.0/search/?dataset=warmeversorgung&q=&facet=waermevers&geofilter.distance=${lat}%2C${lon}%2C${dist}`
+  const url = `https://daten.stadt.sg.ch/api/records/1.0/search/?dataset=warmeversorgung&q=&facet=waermevers&geofilter.distance=${lat}%2C${lon}%2C${dist}`;
 
   const response = await fetch(url);
   const data = await response.json();
-  return data
-}
+  return data;
+};
 
-const getSolarInfo = async(x,y) => {
-  const url = `https://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=${y},${x}&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=1680,388,96&lang=en&layers=all:ch.bfe.solarenergie-eignung-daecher&limit=10&mapExtent=2745356.382965297,1254042.6972188372,2746005.609812927,1254192.6377050756&returnGeometry=true&sr=2056&tolerance=20`
+const getSolarInfo = async (x, y) => {
+  const url = `https://api3.geo.admin.ch/rest/services/all/MapServer/identify?geometry=${y},${x}&geometryFormat=geojson&geometryType=esriGeometryPoint&imageDisplay=1680,388,96&lang=en&layers=all:ch.bfe.solarenergie-eignung-daecher&limit=10&mapExtent=2745356.382965297,1254042.6972188372,2746005.609812927,1254192.6377050756&returnGeometry=true&sr=2056&tolerance=20`;
 
   const response = await fetch(url);
   const data = await response.json();
-  return data
-}
+  return data;
+};
+
+// in the solar info we get an array of objects with the solar potential for each roof
+// we need the highest value of all roofs
+const getHighestSolarClass = (solarInfo) => {
+  let highestClass = 0;
+  let featureId = null;
+  let classText = null;
+  solarInfo.results.forEach((result) => {
+    if (result.properties.klasse > highestClass) {
+      highestClass = result.properties.klasse;
+      featureId = result.featureId;
+      classText = result.properties.klasse_text;
+    }
+  });
+
+  // split classText at ## and get first one
+  classText = classText.split("##")[0];
+  return { highestClass, featureId, classText };
+};
 
 const runSuggestionRequests = async () => {
+  loading.value = true;
+
+  const coords = await getLv95Coords(address.value);
+  console.log("coords", coords);
+
+  if (!coords) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    addChat("Ich konnte die Adresse nicht finden. Bitte versuche es erneut.", "bot");
+    loading.value = false;
+    return;
+  }
+
   addAnswer({
     text: address.value,
     value: address.value,
   });
 
-  loading.value = true;
-
-  const coords = await getLv95Coords(address.value);
-  console.log('coords', coords);
   const heatingInfo = await getHeatingInfo(coords.lat, coords.lon);
-  console.log('heatingInfo', heatingInfo);
+  console.log("heatingInfo", heatingInfo);
   const solarInfo = await getSolarInfo(coords.x, coords.y);
-  console.log('solarInfo', solarInfo);
+  console.log("solarInfo", solarInfo);
 
-
+  const highestSolarClass = getHighestSolarClass(solarInfo);
+  console.log('highestSolarClass', highestSolarClass);
 
   loading.value = false;
-
 
   await new Promise((resolve) => setTimeout(resolve, 3000));
   loading.value = false;
   addChat("Hier sind deine Vorschläge:", "bot");
 };
-
-
-// initial chat message with question from "bot"
-const sendChat = () => {
-  addChat(
-    "Hallo, kann ich dir helfen schnell und einfach Empfehlungen zu geben?",
-    "bot"
-  );
-  addChat(questions.value[questionIndex.value].text, "bot");
-};
-
-sendChat();
-
-
-
-// TESTING
-address.value = "St. Leonhard-Strasse 45, St. Gallen"
-runSuggestionRequests();
 </script>
 
 <template>
@@ -197,7 +228,10 @@ runSuggestionRequests();
                   {{ option.text }}
                 </button>
 
-                <div class="flex w-full" v-if="questions[questionIndex].type === 'address'">
+                <div
+                  class="flex w-full"
+                  v-if="questions[questionIndex].type === 'address'"
+                >
                   <div class="grow px-4">
                     <input
                       class="w-full border-b-2 border-t-0 border-l-0 border-r-0 border-red-500 bg-transparent"
@@ -209,7 +243,7 @@ runSuggestionRequests();
                   <div>
                     <button
                       class="flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white"
-                      @click="runSuggestionRequests({ text: address })"
+                      @click="runSuggestionRequests()"
                     >
                       <PaperAirplaneIcon class="h-4 w-4" />
                     </button>
@@ -222,9 +256,11 @@ runSuggestionRequests();
       </transition>
     </Popover>
 
-    <div class="fixed transform -translate-x-full h-96 -translate-y-96 w-96 bg-red-900 text-white">
+    <div
+      class="fixed h-96 w-96 -translate-x-full -translate-y-96 transform bg-red-900 text-white"
+    >
       <div class="p-2">
-        {{ answers}}
+        {{ answers }}
       </div>
     </div>
     <!-- 
